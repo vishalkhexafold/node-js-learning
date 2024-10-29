@@ -1,11 +1,19 @@
  const express = require('express');    
- const fs = require('fs');     
+ const fs = require('fs');  
+ const morgan = require('morgan');
  const app = express();     
  app.use(express.json());       
-    
+    //middleware
+ app.use(morgan('dev'));
 
-
-
+ app.use((req, res, next) => {
+    console.log('Middleware');
+    next();
+});
+app.use((req, res, next) => {
+req.requestTime = new Date().toISOString();
+    next();
+});
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, 'utf-8'));   
 const getAllTours = (req,res) => {  
     const data =  tours;
@@ -111,22 +119,84 @@ const deleteTour =  (req, res) => {
 };
 
 
+const getAllUsers = (req, res) => {
 
-    app.get('/api/v1/tours',getAllTours);
-    app.get('/api/v1/tours/:id?',getTour);   
-    app.post('/api/v1/tours', createTour);
-    app.patch('/api/v1/tours/:id',updateTour);  
-    app.delete('/api/v1/tours/:id',deleteTour);
+    res.status(500).json({
+        status: 'error',
+        message: 'Not implemented',
+    });
+      
+};
 
-    app
-    .route('/api/v1/tours')
-    .get(getTour)
+const createUser = (req, res) => {
+
+    res.status(500).json({
+        status: 'error',
+        message: 'Not implemented',
+    });
+      
+};
+
+
+const deleteUser = (req, res) => {
+
+    res.status(500).json({
+        status: 'error',
+        message: 'Not implemented',
+    });
+      
+};
+const getUser = (req, res) => {
+
+    res.status(500).json({
+        status: 'error',
+        message: 'Not implemented',
+    });
+      
+};
+const updateUser = (req, res) => {
+
+    res.status(500).json({
+        status: 'error',
+        message: 'Not implemented',
+    });
+      
+};
+//routes    
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+
+app.use('/api/v1/tours',tourRouter );
+app.use('/api/v1/users',tourRouter );
+
+
+// tourRouter.get('/api/v1/tours',getAllTours);
+  
+// tourRouter.get('/api/v1/tours/:id?',getTour);   
+// tourRouter.post('/api/v1/tours', createTour);
+// tourRouter.patch('/api/v1/tours/:id',updateTour);  
+// tourRouter.delete('/api/v1/tours/:id',deleteTour);
+
+tourRouter
+    .route('/')
+    .get(getAllTours)
     .post(createTour);
 
-    app.route('/api/v1/tours/:id')
+    tourRouter.route('/:id')
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
+
+    userRouter.route('/')
+    .get(getAllUsers)
+    .post(createUser);
+
+    userRouter.route('/:id')
+    .get(getUser)
+    .patch(updateUser)
+    .delete(deleteUser);
+
  const port = 3000;    
 
  app.listen(port, () => {        

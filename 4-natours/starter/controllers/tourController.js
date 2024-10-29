@@ -1,4 +1,20 @@
+const exp = require('constants');
 const fs = require('fs');  
+
+
+exports.checkID = (req,res,next,val) => {
+    console.log(`Tour id is: ${val}`);
+    if(req.params.id*1> tours.length){
+
+        return res.status(404).json({
+            message: 'Tour not found',
+            status: 'error',
+        });
+    }
+
+    next();
+};
+
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8'));   
 exports.getAllTours = (req,res) => {  

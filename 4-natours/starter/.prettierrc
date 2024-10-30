@@ -1,7 +1,13 @@
 {
   "singleQuote": true,
+  "editor.formatOnSave": true,
+
   "[javascript]": {
     "editor.formatOnSave": true
   },
-  "printWidth": 80
+  "printWidth": 80,
+  "trailingComma": "none",
+  "proseWrap": "never", 
+  "htmlWhitespaceSensitivity": "ignore",
+  "endOfLine": "lf"
 }

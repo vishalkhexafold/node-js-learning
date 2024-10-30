@@ -1,9 +1,11 @@
  const express = require('express');    
  const morgan = require('morgan');
- const app = express();     
+ const app = express();      
  app.use(express.json());       
     //middleware
  app.use(morgan('dev'));
+
+ app.use(express.static(`${__dirname}/public`)); 
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');

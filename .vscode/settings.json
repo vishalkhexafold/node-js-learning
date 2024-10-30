@@ -1,0 +1,6 @@
+{
+    "editor.formatOnSave": true,
+    "notebook.formatOnSave.enabled": true,
+    "eslint.format.enable": true,
+    "json.format.keepLines": true
+}

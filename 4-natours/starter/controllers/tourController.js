@@ -15,7 +15,15 @@ exports.checkID = (req,res,next,val) => {
     next();
 };
 
-
+exports.checkBody = (req,res,next) => {
+    if(!req.body.name || !req.body.price ){
+        return res.status(400).json({
+            message: 'Please provide all required fields',
+            status: 'error',
+        });
+    }
+    next();
+};
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8'));   
 exports.getAllTours = (req,res) => {  
     const data =  tours;

@@ -1,14 +1,14 @@
 const fs = require('fs');
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8'),
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8')
 );
 exports.checkID = (req, res, next, val) => {
   console.log(`Tour id is: ${val}`);
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       message: 'Tour not found',
-      status: 'error',
+      status: 'error'
     });
   }
 
@@ -19,7 +19,7 @@ exports.checkBody = (req, res, next) => {
   if (!req.body.name || !req.body.price) {
     return res.status(400).json({
       message: 'Please provide all required fields',
-      status: 'error',
+      status: 'error'
     });
   }
   next();
@@ -30,7 +30,7 @@ exports.getAllTours = (req, res) => {
   res.status(200).json({
     result: data.length,
     status: 'success',
-    data: { data },
+    data: { data }
   });
 };
 
@@ -42,14 +42,14 @@ exports.getTour = (req, res) => {
   if (!tour) {
     return res.status(404).json({
       message: 'Tour not found',
-      status: 'error',
+      status: 'error'
     });
   }
   const data = id ? tour : tours;
   return res.status(200).json({
     result: data.length,
     status: 'success',
-    data: data,
+    data: data
   });
 };
 
@@ -63,13 +63,13 @@ exports.createTour = (req, res) => {
     JSON.stringify(tours),
     () => {
       console.log('File changed');
-    },
+    }
   );
 
   console.log(req.body);
   res.status(201).json({
     message: 'Tour added successfully',
-    data: req.body,
+    data: req.body
   });
 };
 // post tour data
@@ -81,7 +81,7 @@ exports.updateTour = (req, res) => {
   if (!tour) {
     return res.status(404).json({
       message: 'Tour not found',
-      status: 'error',
+      status: 'error'
     });
   }
 
@@ -96,14 +96,14 @@ exports.updateTour = (req, res) => {
       if (err) {
         return res.status(500).json({
           message: 'Could not update the tour',
-          status: 'error',
+          status: 'error'
         });
       }
       res.status(200).json({
         message: 'Tour updated successfully',
-        data: tour,
+        data: tour
       });
-    },
+    }
   );
 };
 exports.deleteTour = (req, res) => {
@@ -113,7 +113,7 @@ exports.deleteTour = (req, res) => {
   if (tourIndex === -1) {
     return res.status(404).json({
       message: 'Tour not found',
-      status: 'error',
+      status: 'error'
     });
   }
 
@@ -128,13 +128,13 @@ exports.deleteTour = (req, res) => {
       if (err) {
         return res.status(500).json({
           message: 'Could not delete the tour',
-          status: 'error',
+          status: 'error'
         });
       }
       res.status(204).json({
         // 204 No Content
-        message: 'Tour deleted successfully',
+        message: 'Tour deleted successfully'
       });
-    },
+    }
   );
 };

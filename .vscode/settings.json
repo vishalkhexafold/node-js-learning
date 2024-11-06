@@ -2,5 +2,19 @@
     "editor.formatOnSave": true,
     "notebook.formatOnSave.enabled": true,
     "eslint.format.enable": true,
-    "json.format.keepLines": true
+    "json.format.keepLines": true,
+    "standard.autoFixOnSave": true,
+    "vs-code-prettier-eslint.prettierLast": true,
+    "dartImport.fixOnSave": true,
+    "files.autoSave": "afterDelay",
+    "eslint.run": "onSave",
+    "files.autoSaveWorkspaceFilesOnly": true,
+    "errorLens.onSave": true,
+    "editor.trimAutoWhitespace": true,
+    "editor.codeActionsOnSave": {
+    "source.fixAll": true // Runs all fixable code actions, including Prettier fixes
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true
+  }
 }

@@ -7,7 +7,16 @@
   },
   "printWidth": 80,
   "trailingComma": "none",
-  "proseWrap": "never", 
+  "proseWrap": "never",
   "htmlWhitespaceSensitivity": "ignore",
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "semi": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "quoteProps": "consistent",
+  "jsxSingleQuote": true,
+  "embeddedLanguageFormatting": "auto" 
+
 }

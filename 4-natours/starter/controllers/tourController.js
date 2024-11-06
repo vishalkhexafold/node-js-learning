@@ -112,5 +112,4 @@ exports.deleteTour = async (req, res) => {
       status: error
     });
   }
-
 };

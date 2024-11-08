@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModels');
+const ApiFeatures = require('../utils/apiFeatures');
 
 exports.aliasTopTours = async (req, res, next) => {
   req.query.limit = 5;
@@ -9,49 +10,15 @@ exports.aliasTopTours = async (req, res, next) => {
 
 exports.getAllTours = async (req, res) => {
   try {
-    // BUILD QUERY
-    const queryObj = { ...req.query };
-    const excludeFields = ['page', 'limit', 'sort', 'fields'];
-    excludeFields.forEach((el) => delete queryObj[el]);
-    console.log(queryObj);
-    let queryStr = JSON.stringify(queryObj);
-
-    //advance filtering
-    queryStr = queryStr.replace(
-      /\b(gt|gte|lt|lte|in)\b/g,
-      (match) => `$${match}`
-    );
-
-    let query = Tour.find(JSON.parse(queryStr));
-    //BUILDING SORT QUERY
-    if (req.query.sort) {
-      const sortStr = req.query.sort.split(',').join(' ');
-      query = query.sort(sortStr);
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    // FIELD LIMITING
-    if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ');
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
-    }
-
-    // PAGINATION
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const startIndex = (page - 1) * limit;
-
-    query = query.skip(startIndex).limit(limit);
-    if (req.query.page) {
-      const total = await Tour.countDocuments();
-      if (startIndex >= total) throw new Error('Page not found');
-    }
-
     // EXECUTE QUERY
-    const tours = await query;
+    const features = new ApiFeatures(Tour.find(), req.query)
+      .filter()
+      // .sort()
+      .limitFields()
+      .pagination();
+    const tours = await features.query;
+
+    // const tours = await query;
 
     res.status(200).json({
       result: tours.length,
@@ -59,6 +26,7 @@ exports.getAllTours = async (req, res) => {
       data: { tours }
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: 'Could not get tours',
       status: 'error'

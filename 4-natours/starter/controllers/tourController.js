@@ -104,3 +104,105 @@ exports.deleteTour = async (req, res) => {
     });
   }
 };
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: {
+          ratingAverage: { $gte: 4.5 }
+        }
+      },
+      {
+        $group: {
+          _id: '$difficulty',
+          num: { $sum: 1 },
+          averageRating: { $avg: '$ratingAverage' },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' }
+        }
+      },
+
+      {
+        $sort: { price: -1 }
+      },
+
+      {
+        $match: {
+          _id: { $ne: 'easy' }
+        }
+      }
+    ]);
+
+    res.status(201).json({
+      message: 'Stats fetched  successfully',
+      data: {
+        tour: stats
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: 'Stats not found',
+      status: error
+    });
+  }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1;
+    const plan = await Tour.aggregate([
+      {
+        $unwind: '$startDates'
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`)
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTourStarts: { $sum: 1 },
+          tours: { $push: '$name' }
+        }
+      },
+      {
+        $addFields: {
+          month: '$_id'
+        }
+      },
+      {
+        $project: {
+          _id: 0
+        }
+      },
+      {
+        $sort: {
+          numTourStarts: -1
+        }
+      },
+      {
+        $limit: 12
+      }
+    ]);
+
+    res.status(201).json({
+      message: 'Stats fetched  successfully',
+      data: {
+        tour: plan
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: 'Stats not found',
+      status: error
+    });
+  }
+};

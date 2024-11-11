@@ -50,7 +50,7 @@ exports.getTour = async (req, res) => {
 
 exports.createTour = async (req, res) => {
   try {
-    const newTour = await Tour.create(req.body);
+    const newTour = await Tour.create(req.body, { runValidators: true });
     console.log(req.body);
     res.status(201).json({
       message: 'Tour added successfully',

@@ -1,15 +1,24 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const mongoose = require('mongoose'); // Add this line to require mongoose
-const slugify = require('slugify');
+// const slugify = require('slugify');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const validator = require('validator');
 // Add this line to require slugify
 const tourSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      unique: [true, 'A tour must have a name'],
-      trim: true
+      required: [true, 'A tour must have a duration'],
+      unique: true,
+      trim: true,
+      maxlength: [
+        50,
+        'A tour name must be less than or equal to 50 characters'
+      ],
+      minlength: [10, 'A tour name must be at least 10 characters'],
+      validate: [validator.isAlpha, 'tour name must contain only alphabets']
     },
+    slug: String,
     duration: {
       type: Number,
       required: [true, 'A tour must have a duration']
@@ -20,7 +29,11 @@ const tourSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      required: [true, 'A tour must have a difficulty level']
+      required: [true, 'A tour must have a difficulty level'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Difficulty level must be either easy, medium or difficult'
+      }
     },
     summary: {
       type: String,
@@ -57,7 +70,9 @@ const tourSchema = new mongoose.Schema(
     ratingAverage: {
       type: Number,
       required: true,
-      default: 4.5
+      default: 4.5,
+      min: [1, 'Rating must be at least 1'],
+      max: [5, 'Rating must be at most 5']
     },
     imageCover: {
       type: String,

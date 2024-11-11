@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const mongoose = require('mongoose'); // Add this line to require mongoose
-
+const slugify = require('slugify');
+// Add this line to require slugify
 const tourSchema = new mongoose.Schema(
   {
     name: {
@@ -77,6 +78,10 @@ const tourSchema = new mongoose.Schema(
         type: Date
       }
     ],
+    secretTour: {
+      type: Boolean,
+      default: false
+    },
     createdAt: {
       type: Date,
       default: Date.now
@@ -93,6 +98,38 @@ const tourSchema = new mongoose.Schema(
 );
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+//DOCUMENT MIDDLEWARE: runs before .save() and .create() methods
+// tourSchema.pre('save', function (next) {
+//   this.slug = slugify(this.name, { lower: true });
+//   next();
+// });
+
+// tourSchema.post('save', (doc, next) => {
+//   console.log(doc);
+// });
+
+//QUERY MIDDLEWARE:
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  next();
+});
+
+// tourSchema.pre('findOne', function (next) {
+//   this.findOne({ secretTour: { $ne: true } });
+//   next();
+// });
+
+tourSchema.post(/^find/, (docs, next) => {
+  console.log(docs);
+  next();
+});
+
+tourSchema.pre('aggregate ', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log(this.pipeline());
+  next();
 });
 const Tour = mongoose.model('Tour', tourSchema);
 module.exports = Tour;
